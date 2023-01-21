@@ -1,1 +1,1 @@
-# otus java course
+# OTUS JAVA COURSE
