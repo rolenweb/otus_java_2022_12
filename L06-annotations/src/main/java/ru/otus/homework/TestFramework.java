@@ -5,6 +5,7 @@ import ru.otus.homework.annotations.Before;
 import ru.otus.homework.annotations.Test;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -50,15 +51,22 @@ public class TestFramework {
     private void runTestMethod(Class<?> clazz, List<Method> beforeMethods, Method method, List<Method> afterMethods, Statistic statistic) {
         try {
             Object object = clazz.getDeclaredConstructor().newInstance();
-            runBeforeOrAfterMethods(object, beforeMethods, statistic);
+            runBeforeMethods(object, beforeMethods);
             runTestedMethod(object, method, statistic);
-            runBeforeOrAfterMethods(object, afterMethods, statistic);
+            runAfterMethods(object, afterMethods, statistic);
         } catch (Exception e) {
+            statistic.addFailed(1);
             statistic.addError(e.getCause().toString());
         }
     }
 
-    private void runBeforeOrAfterMethods(Object object, List<Method> methods, Statistic statistic) {
+    private void runBeforeMethods(Object object, List<Method> methods) throws InvocationTargetException, IllegalAccessException {
+        for (Method method : methods) {
+            method.invoke(object);
+        }
+    }
+
+    private void runAfterMethods(Object object, List<Method> methods, Statistic statistic) {
         try {
             for (Method method : methods) {
                 method.invoke(object);

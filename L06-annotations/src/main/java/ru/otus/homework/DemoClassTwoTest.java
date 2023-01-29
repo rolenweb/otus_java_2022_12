@@ -4,14 +4,15 @@ import ru.otus.homework.annotations.After;
 import ru.otus.homework.annotations.Before;
 import ru.otus.homework.annotations.Test;
 
-public class DemoClassTest {
+public class DemoClassTwoTest {
     @Before
     public void beforeEachOne() {
 
     }
+
     @Before
     public void beforeEachTwo() {
-
+        throw new RuntimeException("Something happened in beforeEachTwo");
     }
 
     @Test
@@ -21,7 +22,7 @@ public class DemoClassTest {
 
     @Test
     public void testTwo() {
-        throw new RuntimeException("Something happened in testTwo");
+
     }
 
     @Test
@@ -31,11 +32,7 @@ public class DemoClassTest {
 
     @After
     public void afterEachOne() {
-        throw new RuntimeException("Something happened in afterEachOne");
-    }
-
-    @After
-    public void afterEachTwo() {
 
     }
+
 }
