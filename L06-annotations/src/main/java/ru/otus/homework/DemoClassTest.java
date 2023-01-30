@@ -7,16 +7,16 @@ import ru.otus.homework.annotations.Test;
 public class DemoClassTest {
     @Before
     public void beforeEachOne() {
-
+        System.out.println("beforeEachOne");
     }
     @Before
     public void beforeEachTwo() {
-
+        System.out.println("beforeEachTwo");
     }
 
     @Test
     public void testOne() {
-
+        System.out.println("testOne");
     }
 
     @Test
@@ -26,7 +26,7 @@ public class DemoClassTest {
 
     @Test
     public void testThree() {
-
+        System.out.println("testThree");
     }
 
     @After
@@ -36,6 +36,6 @@ public class DemoClassTest {
 
     @After
     public void afterEachTwo() {
-
+        System.out.println("afterEachTwo");
     }
 }

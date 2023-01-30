@@ -51,9 +51,12 @@ public class TestFramework {
     private void runTestMethod(Class<?> clazz, List<Method> beforeMethods, Method method, List<Method> afterMethods, Statistic statistic) {
         try {
             Object object = clazz.getDeclaredConstructor().newInstance();
-            runBeforeMethods(object, beforeMethods);
-            runTestedMethod(object, method, statistic);
-            runAfterMethods(object, afterMethods, statistic);
+            try {
+                runBeforeMethods(object, beforeMethods);
+                runTestedMethod(object, method, statistic);
+            } finally {
+                runAfterMethods(object, afterMethods, statistic);
+            }
         } catch (Exception e) {
             statistic.addFailed(1);
             statistic.addError(e.getCause().toString());
