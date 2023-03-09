@@ -12,4 +12,12 @@ public class ObjectForMessage {
     public void setData(List<String> data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        if (data != null) {
+            return data.toString();
+        }
+        return "";
+    }
 }

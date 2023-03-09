@@ -11,17 +11,17 @@ public class ProcessorExchangeFieldsTest {
     @DisplayName("Test the processor that exchange fields")
     void canExchangeField() {
         var id = 100L;
-        String field11 = "field11";
-        String field12 = "field12";
-        Message message = new Message
+        var field11 = "field11";
+        var field12 = "field12";
+        var message = new Message
                 .Builder(id)
                 .field11(field11)
                 .field12(field12)
                 .build();
 
         Processor processor = new ProcessorExchangeFields();
-        message = processor.process(message);
-        assertEquals(field11, message.getField12());
-        assertEquals(field12, message.getField11());
+        var updatedMessage = processor.process(message);
+        assertEquals(field11, updatedMessage.getField12());
+        assertEquals(field12, updatedMessage.getField11());
     }
 }

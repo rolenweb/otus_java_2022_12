@@ -15,10 +15,14 @@ public class HistoryListener implements Listener, HistoryReader {
 
     @Override
     public void onUpdated(Message msg) {
-        ObjectForMessage objectForMessage = new ObjectForMessage();
-        List<String> clonedList = new ArrayList<>(msg.getField13().getData());
-        objectForMessage.setData(clonedList);
-        history.put(msg.getId(), msg.toBuilder().field13(objectForMessage).build());
+        var msgBuilder = msg.toBuilder();
+        if (msg.getField13() != null) {
+            var objectForMessage = new ObjectForMessage();
+            List<String> clonedList = new ArrayList<>(msg.getField13().getData());
+            objectForMessage.setData(clonedList);
+            msgBuilder.field13(objectForMessage);
+        }
+        history.put(msg.getId(), msgBuilder.build());
 
     }
 

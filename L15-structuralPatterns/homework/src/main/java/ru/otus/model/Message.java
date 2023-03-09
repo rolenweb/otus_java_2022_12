@@ -129,7 +129,7 @@ public class Message {
                 ", field10='" + field10 + '\'' +
                 ", field11='" + field11 + '\'' +
                 ", field12='" + field12 + '\'' +
-                ", field13='" + field13.getData().toString() + '\'' +
+                ", field13='" + field13 + '\'' +
                 '}';
     }
 
