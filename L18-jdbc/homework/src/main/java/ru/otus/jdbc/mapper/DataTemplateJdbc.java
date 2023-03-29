@@ -34,26 +34,26 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), rs -> {
             try {
                 if (rs.next()) {
-                    List<Object> listValues = new ArrayList<>();
-                    List<Class<T>> listTypes = new ArrayList<>();
+                    var instance = entityClassMetaData.getConstructor().newInstance();
                     List<Field> fields = entityClassMetaData.getAllFields();
                     fields.forEach(field -> {
                         try {
                             if (!(rs.getObject(field.getName()) == null)) {
-                                listValues.add(rs.getObject(field.getName(), field.getType()));
-                                listTypes.add((Class<T>) field.getType());
+                                var setter = String.format("set%s", StringUtil.capitalize(field.getName()));
+                                var method = instance.getClass().getDeclaredMethod(setter, field.getType());
+                                method.invoke(instance, rs.getObject(field.getName(), field.getType()));
                             }
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                        } catch (SQLException | NoSuchMethodException | InvocationTargetException |
+                                 IllegalAccessException e) {
+                            throw new DataTemplateException(e);
                         }
                     });
-                    return (T)entityClassMetaData.getConstructor(listTypes.toArray(Class[]::new)).newInstance(listValues.toArray());
+
+                    return instance;
                 }
                 return null;
-            } catch (SQLException e) {
+            } catch (SQLException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
                 throw new DataTemplateException(e);
-            } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-                throw new RuntimeException(e);
             }
         });
     }
@@ -64,24 +64,23 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             var list = new ArrayList<T>();
             try {
                 while (rs.next()) {
-                    List<Object> fieldValues = new ArrayList<>();
-                    List<Class<T>> fieldTypes = new ArrayList<>();
+                    var instance = entityClassMetaData.getConstructor().newInstance();
                     List<Field> fields = entityClassMetaData.getAllFields();
                     fields.forEach(field -> {
                         try {
-                            fieldValues.add(rs.getObject(field.getName(), field.getType()));
-                            fieldTypes.add((Class<T>) field.getType());
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                            var setter = String.format("set%s", StringUtil.capitalize(field.getName()));
+                            var method = instance.getClass().getDeclaredMethod(setter, field.getType());
+                            method.invoke(instance, rs.getObject(field.getName(), field.getType()));
+                        } catch (SQLException | InvocationTargetException | NoSuchMethodException |
+                                 IllegalAccessException e) {
+                            throw new DataTemplateException(e);
                         }
                     });
-                    list.add((T)entityClassMetaData.getConstructor(fieldTypes.toArray(Class[]::new)).newInstance(fieldValues.toArray()));
+                    list.add(instance);
                 }
                 return list;
-            } catch (SQLException e) {
+            } catch (SQLException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 throw new DataTemplateException(e);
-            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
             }
         }).orElseThrow(() -> new RuntimeException("Unexpected error"));
     }
@@ -96,7 +95,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     field.setAccessible(true);
                     listValues.add(field.get(client));
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    throw new DataTemplateException(e);
                 }
             });
             return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(), listValues);

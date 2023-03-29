@@ -12,12 +12,12 @@ public class EntitySQLMetaDataImplTest {
     @DisplayName("Can get SQL query to get all records")
     void testCanGetSelectAllSql() {
         var clientEntitySqlData = new EntitySQLMetaDataImpl(new EntityClassMetaDataImpl<>(Client.class));
-        var expectedClientSql = "select * from client";
+        var expectedClientSql = "select id, name from client";
         var actualClientSql = clientEntitySqlData.getSelectAllSql();
         assertEquals(expectedClientSql, actualClientSql);
 
         var managerEntitySqlData = new EntitySQLMetaDataImpl(new EntityClassMetaDataImpl<>(Manager.class));
-        var expectedManagerSql = "select * from manager";
+        var expectedManagerSql = "select no, label, param1 from manager";
         var actualManagerSql = managerEntitySqlData.getSelectAllSql();
         assertEquals(expectedManagerSql, actualManagerSql);
     }

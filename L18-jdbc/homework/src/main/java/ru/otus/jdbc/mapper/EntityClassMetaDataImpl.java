@@ -29,9 +29,9 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
     }
 
     @Override
-    public Constructor<T> getConstructor(Class<?>... parameterTypes) {
+    public Constructor<T> getConstructor() {
         try {
-            return clazz.getConstructor(parameterTypes);
+            return clazz.getConstructor();
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

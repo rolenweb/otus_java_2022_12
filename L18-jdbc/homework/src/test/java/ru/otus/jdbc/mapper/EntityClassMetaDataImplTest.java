@@ -20,23 +20,6 @@ public class EntityClassMetaDataImplTest {
     }
 
     @Test
-    @DisplayName("Can get a constructor")
-    void testCanGetConstructor() throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        var clientEntityClassMetaData = new EntityClassMetaDataImpl<>(Client.class);
-        var clientConstructor = clientEntityClassMetaData.getConstructor(clientEntityClassMetaData.getAllFields().stream().map(Field::getType).toArray(Class[]::new));
-        Client client = clientConstructor.newInstance(1L, "name");
-        assertEquals(1, client.getId());
-        assertEquals("name", client.getName());
-
-        var managerEntityClassMetaData = new EntityClassMetaDataImpl<>(Manager.class);
-        var managerConstructor = managerEntityClassMetaData.getConstructor(managerEntityClassMetaData.getAllFields().stream().map(Field::getType).toArray(Class[]::new));
-        Manager manager = managerConstructor.newInstance(1L, "label", "param1");
-        assertEquals(1, manager.getNo());
-        assertEquals("label", manager.getLabel());
-        assertEquals("param1", manager.getParam1());
-    }
-
-    @Test
     @DisplayName("Can get all class fields")
     void testCanGetAllFields() {
         var clientListField = new EntityClassMetaDataImpl<>(Client.class).getAllFields();
