@@ -1,13 +1,9 @@
-create table test
-(
-    id   int,
-    name varchar(50)
-);
-create table client
+CREATE TABLE client
 (
     id   bigserial not null primary key,
-    name varchar(50)
+    name VARCHAR(50) UNIQUE NOT NULL
 );
+
 CREATE TABLE manager
 (
     no bigserial not null primary key,
