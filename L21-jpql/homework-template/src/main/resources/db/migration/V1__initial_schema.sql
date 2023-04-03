@@ -18,6 +18,7 @@ create table client
     name varchar(50)
 );
 
+create sequence address_SEQ start with 1 increment by 1;
 
 create table address
 (
@@ -25,9 +26,18 @@ create table address
     street varchar(255)
 );
 
+create sequence phone_SEQ start with 1 increment by 1;
+
 create table phone
 (
     id bigint not null primary key,
-    number varchar(50),
-    client_id bigint not null
-)
+    client_id bigint not null,
+    number varchar(50)
+);
+
+ALTER TABLE client
+    ADD CONSTRAINT fk_client_address FOREIGN KEY (address_id) REFERENCES address (id);
+
+ALTER TABLE phone
+    ADD CONSTRAINT fk_phone_client FOREIGN KEY (client_id) REFERENCES client (id);
+
