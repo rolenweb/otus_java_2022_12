@@ -13,4 +13,7 @@ public interface Versions {
     String neo4j = "5.7.0";
     String jedis = "4.3.2";
 
+    String jetty = "11.0.14";
+    String freemarker = "2.3.32";
+
 }
