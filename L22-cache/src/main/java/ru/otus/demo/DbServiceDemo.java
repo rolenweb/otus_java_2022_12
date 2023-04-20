@@ -3,10 +3,7 @@ package ru.otus.demo;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.cachehw.HwCache;
-import ru.otus.cachehw.HwCacheKeyProvider;
-import ru.otus.cachehw.HwCacheKeyProviderImpl;
-import ru.otus.cachehw.MyCache;
+import ru.otus.cachehw.*;
 import ru.otus.core.repository.DataTemplateHibernate;
 import ru.otus.core.repository.HibernateUtils;
 import ru.otus.core.sessionmanager.TransactionManagerHibernate;
@@ -17,7 +14,6 @@ import ru.otus.crm.model.Phone;
 import ru.otus.crm.service.DbServiceClientImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 public class DbServiceDemo {
 
@@ -40,7 +36,7 @@ public class DbServiceDemo {
 ///
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
 
-        HwCache<String, Optional<Client>> cache = new MyCache<>();
+        HwCache<String, Client> cache = new MyCache<>();
         HwCacheKeyProvider cacheKeyProvider = new HwCacheKeyProviderImpl();
 ///
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate, cache, cacheKeyProvider);

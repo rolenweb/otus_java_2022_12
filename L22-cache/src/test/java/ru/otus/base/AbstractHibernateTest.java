@@ -63,7 +63,7 @@ public abstract class AbstractHibernateTest {
 
         transactionManager = new TransactionManagerHibernate(sessionFactory);
         clientTemplate = new DataTemplateHibernate<>(Client.class);
-        HwCache<String, Optional<Client>> cache = new MyCache<>();
+        HwCache<String, Client> cache = new MyCache<>();
         HwCacheKeyProvider cacheKeyProvider = new HwCacheKeyProviderImpl();
         dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate, cache, cacheKeyProvider);
     }

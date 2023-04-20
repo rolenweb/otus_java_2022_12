@@ -17,11 +17,11 @@ public class DbServiceClientImpl implements DBServiceClient {
     private final DataTemplate<Client> clientDataTemplate;
     private final TransactionManager transactionManager;
 
-    private final HwCache<String, Optional<Client>> cache;
+    private final HwCache<String, Client> cache;
 
     private final HwCacheKeyProvider cacheKeyProvider;
 
-    public DbServiceClientImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate, HwCache<String, Optional<Client>> cache, HwCacheKeyProvider cacheKeyProvider) {
+    public DbServiceClientImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate, HwCache<String, Client> cache, HwCacheKeyProvider cacheKeyProvider) {
         this.transactionManager = transactionManager;
         this.clientDataTemplate = clientDataTemplate;
         this.cache = cache;
@@ -35,12 +35,12 @@ public class DbServiceClientImpl implements DBServiceClient {
             if (client.getId() == null) {
                 clientDataTemplate.insert(session, clientCloned);
                 log.info("created client: {}", clientCloned);
-                cache.put(cacheKeyProvider.getKey("client", clientCloned.getId()), Optional.of(clientCloned));
+                cache.put(cacheKeyProvider.getKey("client", clientCloned.getId()), clientCloned);
                 return clientCloned;
             }
             clientDataTemplate.update(session, clientCloned);
             log.info("updated client: {}", clientCloned);
-            cache.put(cacheKeyProvider.getKey("client", clientCloned.getId()), Optional.of(clientCloned));
+            cache.put(cacheKeyProvider.getKey("client", clientCloned.getId()), clientCloned);
             return clientCloned;
         });
     }
@@ -52,12 +52,9 @@ public class DbServiceClientImpl implements DBServiceClient {
             Optional<Client> clientOptional;
             if (cache.get(cacheKey) == null) {
                 clientOptional = clientDataTemplate.findById(session, id);
-                cache.put(cacheKey, clientOptional);
-                log.info("put a client: {} to cache", clientOptional);
+                clientOptional.ifPresent(client -> cache.put(cacheKey, client));
             }
-            clientOptional = cache.get(cacheKey);
-            log.info("get a client: {} from cache", clientOptional);
-            return clientOptional;
+            return Optional.ofNullable(cache.get(cacheKey));
         });
     }
 
