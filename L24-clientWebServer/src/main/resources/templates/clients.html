@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Clients</title>
+
+</head>
+
+<body>
+
+<h4>Clients</h4>
+<form action="clients" method="post">
+    <label>
+        Name<br/>
+        <input type="text" name="name" value="">
+    </label>
+    <br/>
+    <label>
+        Address<br/>
+        <input type="text" name="address" value="">
+    </label>
+    <br/>
+    <label>
+        Phones<br/>
+        <input type="text" name="phones[]" value="">
+        <input type="text" name="phones[]" value="">
+    </label>
+    <br/><br/>
+    <input type="submit" value="Create">
+</form>
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Name</td>
+        <td style="width: 150px">Address</td>
+        <td style="width: 150px">Phones</td>
+    </tr>
+    </thead>
+    <tbody>
+    <#list clients as client>
+    <tr>
+        <td>${client.id}</td>
+        <td>${client.name}</td>
+        <td>${client.street()}</td>
+        <td>${client.phoneNumbers()}</td>
+    </tr>
+    </#list>
+    </tbody>
+</table>
+</body>
+</html>
