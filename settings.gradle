@@ -69,7 +69,7 @@ include 'L30-JMM'
 include 'L31-executors'
 
 include 'L32-concurrentCollections:ConcurrentCollections'
-include 'L32-concurrentCollections:QueueDemo'
+include 'L32-concurrentCollections:Homework'
 
 include 'L33-multiprocess:processes-demo'
 include 'L33-multiprocess:sockets-demo'
