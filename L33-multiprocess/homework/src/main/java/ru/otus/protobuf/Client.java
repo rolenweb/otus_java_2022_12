@@ -5,6 +5,7 @@ import io.grpc.stub.StreamObserver;
 import ru.otus.protobuf.generated.Number;
 import ru.otus.protobuf.generated.NumberRequest;
 import ru.otus.protobuf.generated.RemoteGeneratorServiceGrpc;
+import ru.otus.protobuf.model.ServerNumber;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -14,7 +15,7 @@ public class Client {
     private static final int SERVER_PORT = 8190;
 
     public static void main(String[] args) throws InterruptedException {
-        Queue<Integer> serverNumbers = new LinkedList<>();
+        var serverNumber = new ServerNumber();
         var channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
                 .usePlaintext()
                 .build();
@@ -23,7 +24,7 @@ public class Client {
         newStub.generate(NumberRequest.newBuilder().setFirstValue(0).setLastValue(30).build(), new StreamObserver<Number>() {
             @Override
             public void onNext(Number value) {
-                serverNumbers.add(value.getNumber());
+                serverNumber.setValue(value.getNumber());
                 System.out.printf("New value from server %s%n", value.getNumber());
             }
 
@@ -39,9 +40,8 @@ public class Client {
         });
         var clientNumber = 0;
         for (int i = 0; i < 50; i++) {
-            Integer serverNumber = serverNumbers.poll();
-            if (serverNumber != null) {
-                clientNumber = clientNumber + serverNumber + 1;
+            if (!serverNumber.isUsed()) {
+                clientNumber = clientNumber + serverNumber.getValue() + 1;
             } else {
                 clientNumber = clientNumber + 1;
             }
