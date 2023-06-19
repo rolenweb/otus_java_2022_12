@@ -22,6 +22,7 @@ public class Client {
         newStub.generate(NumberRequest.newBuilder().setFirstValue(0).setLastValue(30).build(), new StreamObserver<Number>() {
             @Override
             public void onNext(Number value) {
+                serverNumber.poll();
                 serverNumber.add(value.getNumber());
                 System.out.printf("New value from server %s%n", value.getNumber());
             }
