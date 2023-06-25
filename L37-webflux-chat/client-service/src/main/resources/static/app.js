@@ -3,6 +3,7 @@ let stompClient = null;
 const chatLineElementId = "chatLine";
 const roomIdElementId = "roomId";
 const messageElementId = "message";
+const blockCreateMessageId = "block-create-message"
 
 
 const setConnected = (connected) => {
@@ -23,6 +24,11 @@ const connect = () => {
         const roomId = document.getElementById(roomIdElementId).value;
         console.log(`Connected to roomId: ${roomId} frame:${frame}`);
         stompClient.subscribe(`/topic/response.${roomId}`, (message) => showMessage(JSON.parse(message.body).messageStr));
+        if(roomId == 1408) {
+            document.getElementById(blockCreateMessageId).style.display = "none";
+        }else{
+            document.getElementById(blockCreateMessageId).style.display = "block";
+        }
     });
 }
 

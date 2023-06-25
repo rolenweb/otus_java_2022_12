@@ -26,6 +26,8 @@ public class MessageController {
     private final WebClient datastoreClient;
     private final SimpMessagingTemplate template;
 
+    private static final Integer ROOM_1408 = 1408;
+
     public MessageController(WebClient datastoreClient, SimpMessagingTemplate template) {
         this.datastoreClient = datastoreClient;
         this.template = template;
@@ -34,11 +36,15 @@ public class MessageController {
     @MessageMapping("/message.{roomId}")
     public void getMessage(@DestinationVariable String roomId, Message message) {
         logger.info("get message:{}, roomId:{}", message, roomId);
+        if (Integer.parseInt(roomId) == ROOM_1408) {
+            throw new RoomException("Sending message is prohibited from room 1408");
+        }
         saveMessage(roomId, message)
                 .subscribe(msgId -> logger.info("message send id:{}", msgId));
 
-        template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, roomId),
-                new Message(HtmlUtils.htmlEscape(message.messageStr())));
+        var sentMessage = new Message(HtmlUtils.htmlEscape(message.messageStr()));
+        template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, roomId), sentMessage);
+        template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, ROOM_1408), sentMessage);
     }
 
 
@@ -74,7 +80,7 @@ public class MessageController {
     }
 
     private Flux<Message> getMessagesByRoomId(long roomId) {
-        return datastoreClient.get().uri(String.format("/msg/%s", roomId))
+        return datastoreClient.get().uri(getUriMessagesByRoomId(roomId))
                 .accept(MediaType.APPLICATION_NDJSON)
                 .exchangeToFlux(response -> {
                     if (response.statusCode().equals(HttpStatus.OK)) {
@@ -83,5 +89,13 @@ public class MessageController {
                         return response.createException().flatMapMany(Mono::error);
                     }
                 });
+    }
+
+    private String getUriMessagesByRoomId(long roomId) {
+        if (roomId == ROOM_1408) {
+            return "/msg-all";
+        }
+
+        return String.format("/msg/%s", roomId);
     }
 }
