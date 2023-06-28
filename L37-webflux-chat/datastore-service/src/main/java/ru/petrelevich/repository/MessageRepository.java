@@ -1,5 +1,6 @@
 package ru.petrelevich.repository;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -11,4 +12,7 @@ public interface MessageRepository extends ReactiveCrudRepository<Message, Long>
     @Query("select * from message where room_id = :room_id order by id")
     Flux<Message> findByRoomId(@Param("roomId") String roomId);
 
+    @Nonnull
+    @Query("select * from message order by id")
+    Flux<Message> findAll();
 }
